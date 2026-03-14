@@ -57,8 +57,9 @@ const Fireworks = ({ onDone }: { onDone: () => void }) => {
         p.y += p.vy;
         p.vy += 0.05;
         p.life -= 0.012;
+        const radius = Math.max(0, p.size * p.life);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.life;
         ctx.fill();

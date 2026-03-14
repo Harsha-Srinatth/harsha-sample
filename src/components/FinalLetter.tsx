@@ -5,43 +5,41 @@ const LETTER = `To my dearest Ishuamma ✨, you are the most comfortable person 
 
 const FinalLetter = () => {
   const [displayed, setDisplayed] = useState("");
-  const [started, setStarted] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (!started) return;
     let i = 0;
     const interval = setInterval(() => {
       if (i < LETTER.length) {
         setDisplayed(LETTER.slice(0, i + 1));
         i++;
       } else {
+        setDone(true);
         clearInterval(interval);
       }
     }, 50);
     return () => clearInterval(interval);
-  }, [started]);
+  }, []);
 
   return (
     <motion.section
       className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      onViewportEnter={() => setStarted(true)}
     >
       <h2 className="font-display text-4xl text-primary glow-text-gold mb-10">A Letter For You</h2>
 
       <div className="quiz-card max-w-md w-full">
         <p className="font-body text-foreground text-base leading-relaxed whitespace-pre-wrap min-h-[200px]">
           {displayed}
-          {displayed.length < LETTER.length && (
+          {!done && (
             <span className="inline-block w-0.5 h-5 bg-primary ml-0.5 animate-pulse" />
           )}
         </p>
       </div>
 
-      {displayed.length >= LETTER.length && (
+      {done && (
         <motion.p
           className="font-display text-3xl text-secondary glow-text-rose mt-10"
           initial={{ opacity: 0, scale: 0.8 }}
