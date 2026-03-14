@@ -6,17 +6,13 @@ const CakeSection = () => {
   const [showReveal, setShowReveal] = useState(false);
   const cakeRef = useRef<HTMLDivElement>(null);
   const knifeY = useMotionValue(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const handleDragEnd = () => {
-    if (!cakeRef.current) return;
-    const rect = cakeRef.current.getBoundingClientRect();
-    const knifeCenterY = rect.top + rect.height * 0.3 + knifeY.get();
-    const cakeCenterY = rect.top + rect.height * 0.6;
-
-    if (Math.abs(knifeCenterY - cakeCenterY) < 60) {
-      // Cut the cake!
+    const currentY = knifeY.get();
+    // If dragged down enough (past ~120px), it hits the cake
+    if (currentY > 100) {
       if (navigator.vibrate) navigator.vibrate(200);
-      // Play sparkle sound
       try {
         const audio = new Audio("https://cdn.freesound.org/previews/397/397354_4284968-lq.mp3");
         audio.volume = 0.5;
@@ -47,6 +43,7 @@ const CakeSection = () => {
 
   return (
     <motion.section
+      ref={sectionRef}
       className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -57,11 +54,11 @@ const CakeSection = () => {
         {cakeCut ? "Yay! 🎉" : "Cut the Cake!"}
       </h2>
 
-      <div ref={cakeRef} className="relative w-64 h-80 flex flex-col items-center">
+      <div ref={cakeRef} className="relative w-64 flex flex-col items-center" style={{ height: 320 }}>
         {/* Knife - draggable */}
         {!cakeCut && (
           <motion.div
-            className="absolute top-4 z-10 text-5xl cursor-grab active:cursor-grabbing select-none"
+            className="absolute top-0 z-10 text-5xl cursor-grab active:cursor-grabbing select-none"
             drag="y"
             dragConstraints={{ top: -20, bottom: 200 }}
             dragElastic={0.1}
@@ -74,20 +71,20 @@ const CakeSection = () => {
         )}
 
         {/* Cake */}
-        <div className="absolute bottom-0 flex flex-col items-center">
+        <div className="absolute bottom-8 flex flex-col items-center">
           {/* Candles */}
           {!cakeCut && (
             <div className="flex gap-4 mb-1">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="flex flex-col items-center">
                   <div
-                    className="w-3 h-5 rounded-full bg-gradient-to-t"
+                    className="w-3 h-5 rounded-full"
                     style={{
                       background: "linear-gradient(to top, #FF6B00, #FFD700, #FFFF00)",
                       animation: `flicker ${0.3 + i * 0.1}s ease-in-out infinite`,
                     }}
                   />
-                  <div className="w-1 h-6 bg-rose" />
+                  <div className="w-1 h-6" style={{ background: "hsl(var(--rose))" }} />
                 </div>
               ))}
             </div>
@@ -99,18 +96,12 @@ const CakeSection = () => {
             animate={cakeCut ? { gap: "2rem" } : { gap: "0" }}
             transition={{ duration: 0.8 }}
           >
-            <motion.div
-              animate={cakeCut ? { rotate: -15, x: -10 } : {}}
-              transition={{ duration: 0.8 }}
-            >
+            <motion.div animate={cakeCut ? { rotate: -15, x: -10 } : {}} transition={{ duration: 0.8 }}>
               <div className="w-20 h-8 rounded-t-lg" style={{ background: "linear-gradient(135deg, #FF69B4, #FF1493)" }} />
               <div className="w-20 h-10" style={{ background: "linear-gradient(135deg, #D4AF37, #FFD700)" }} />
               <div className="w-20 h-8 rounded-b-lg" style={{ background: "linear-gradient(135deg, #8B4513, #D2691E)" }} />
             </motion.div>
-            <motion.div
-              animate={cakeCut ? { rotate: 15, x: 10 } : {}}
-              transition={{ duration: 0.8 }}
-            >
+            <motion.div animate={cakeCut ? { rotate: 15, x: 10 } : {}} transition={{ duration: 0.8 }}>
               <div className="w-20 h-8 rounded-t-lg" style={{ background: "linear-gradient(135deg, #FF69B4, #FF1493)" }} />
               <div className="w-20 h-10" style={{ background: "linear-gradient(135deg, #D4AF37, #FFD700)" }} />
               <div className="w-20 h-8 rounded-b-lg" style={{ background: "linear-gradient(135deg, #8B4513, #D2691E)" }} />

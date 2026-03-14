@@ -25,23 +25,24 @@ const ITEM_CONFIG = {
 
 const CatchGame = ({ onWin }: Props) => {
   const [score, setScore] = useState(0);
-  const [catcherX, setCatcherX] = useState(50);
   const [items, setItems] = useState<FallingItem[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
   const [message, setMessage] = useState("");
+  const [won, setWon] = useState(false);
   const gameRef = useRef<HTMLDivElement>(null);
   const idRef = useRef(0);
-  const scoreRef = useRef(0);
+  const catcherXRef = useRef(50);
+  const [catcherX, setCatcherX] = useState(50);
 
   const WINNING_SCORE = 30;
 
   useEffect(() => {
-    scoreRef.current = score;
-    if (score >= WINNING_SCORE) {
+    if (score >= WINNING_SCORE && !won) {
+      setWon(true);
       setGameStarted(false);
-      onWin();
+      setTimeout(() => onWin(), 800);
     }
-  }, [score, onWin]);
+  }, [score, onWin, won]);
 
   const spawnItem = useCallback(() => {
     const types: FallingItem["type"][] = ["heart", "cake", "gift", "bomb", "broken", "nickname"];
@@ -60,14 +61,14 @@ const CatchGame = ({ onWin }: Props) => {
       y: -5,
       type,
       emoji: ITEM_CONFIG[type].emoji,
-      speed: 0.6 + Math.random() * 0.5,
+      speed: 0.4 + Math.random() * 0.4,
     };
     setItems((prev) => [...prev, item]);
   }, []);
 
   useEffect(() => {
     if (!gameStarted) return;
-    const spawnInterval = setInterval(spawnItem, 900);
+    const spawnInterval = setInterval(spawnItem, 1000);
     return () => clearInterval(spawnInterval);
   }, [gameStarted, spawnItem]);
 
@@ -77,12 +78,12 @@ const CatchGame = ({ onWin }: Props) => {
     const tick = () => {
       setItems((prev) => {
         const next: FallingItem[] = [];
+        const cx = catcherXRef.current;
         prev.forEach((item) => {
           const ny = item.y + item.speed;
-          if (ny > 85) {
-            // Check catch
-            const diff = Math.abs(item.x - catcherX);
-            if (diff < 12) {
+          if (ny > 88) {
+            const diff = Math.abs(item.x - cx);
+            if (diff < 14) {
               const cfg = ITEM_CONFIG[item.type];
               if (item.type === "bomb" || item.type === "broken") {
                 setMessage(item.type === "bomb" ? "💥 Boom! Haha!" : "💔 Oops!");
@@ -95,7 +96,7 @@ const CatchGame = ({ onWin }: Props) => {
                 }
               }
             }
-            return; // Remove item
+            return;
           }
           next.push({ ...item, y: ny });
         });
@@ -105,21 +106,41 @@ const CatchGame = ({ onWin }: Props) => {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [gameStarted, catcherX]);
+  }, [gameStarted]);
 
-  const handleTouch = (e: React.TouchEvent) => {
+  const updateCatcherX = (clientX: number) => {
     if (!gameRef.current) return;
     const rect = gameRef.current.getBoundingClientRect();
-    const x = ((e.touches[0].clientX - rect.left) / rect.width) * 100;
-    setCatcherX(Math.max(5, Math.min(95, x)));
+    const x = ((clientX - rect.left) / rect.width) * 100;
+    const clamped = Math.max(5, Math.min(95, x));
+    catcherXRef.current = clamped;
+    setCatcherX(clamped);
+  };
+
+  const handleTouch = (e: React.TouchEvent) => {
+    updateCatcherX(e.touches[0].clientX);
   };
 
   const handleMouse = (e: React.MouseEvent) => {
-    if (!gameRef.current) return;
-    const rect = gameRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    setCatcherX(Math.max(5, Math.min(95, x)));
+    updateCatcherX(e.clientX);
   };
+
+  if (won) {
+    return (
+      <section className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-10">
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, type: "spring" }}
+          className="text-center"
+        >
+          <p className="text-5xl mb-4">🎉</p>
+          <h3 className="font-display text-3xl text-primary glow-text-gold mb-2">You Won!</h3>
+          <p className="text-muted-foreground font-body">Score: {score} — Time to cut the cake! 🎂</p>
+        </motion.div>
+      </section>
+    );
+  }
 
   if (!gameStarted) {
     return (
@@ -153,7 +174,6 @@ const CatchGame = ({ onWin }: Props) => {
           className="text-secondary font-body font-bold text-lg mb-2"
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          exit={{ opacity: 0 }}
         >
           {message}
         </motion.p>
@@ -165,7 +185,6 @@ const CatchGame = ({ onWin }: Props) => {
         onTouchMove={handleTouch}
         onMouseMove={handleMouse}
       >
-        {/* Falling items */}
         {items.map((item) => (
           <div
             key={item.id}
@@ -175,8 +194,6 @@ const CatchGame = ({ onWin }: Props) => {
             {item.emoji}
           </div>
         ))}
-
-        {/* Catcher (Teddy) */}
         <div
           className="absolute text-4xl"
           style={{ left: `${catcherX}%`, bottom: "4%", transform: "translateX(-50%)" }}
