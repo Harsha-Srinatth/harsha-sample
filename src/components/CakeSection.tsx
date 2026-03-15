@@ -32,7 +32,7 @@ const CakeSection = () => {
         transition={{ duration: 1.5 }}
       >
         <div className="polaroid-card max-w-xs glow-gold">
-          <img src="/placeholder.svg" alt="Us together" className="w-full aspect-square object-cover rounded-sm" />
+          <img src="/ishu6.jpeg" alt="Us together" className="w-full aspect-square object-cover rounded-sm" />
           <p className="text-center mt-3 font-display text-xl" style={{ color: "#333" }}>
             The best part of my year is you.
           </p>

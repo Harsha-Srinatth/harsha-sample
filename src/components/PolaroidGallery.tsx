@@ -2,10 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const photos = [
-  { id: 1, src: "/placeholder.svg", caption: "Us 💕", rotation: -8 },
-  { id: 2, src: "/placeholder.svg", caption: "Forever ✨", rotation: 5 },
-  { id: 3, src: "/placeholder.svg", caption: "My Teddy 🧸", rotation: -4 },
-  { id: 4, src: "/placeholder.svg", caption: "Bangaram 💖", rotation: 7 },
+  { id: 1, src: "/ishu5.jpeg", caption: "Ishuamma 💕", rotation: -8 },
+  { id: 2, src: "/ishu2.jpeg", caption: "Forever ✨", rotation: 5 },
+  { id: 3, src: "/ishu8.jpeg", caption: "My Teddy 🧸", rotation: -4 },
+  { id: 4, src: "/ishu1.jpeg", caption: "Bangaram 💖", rotation: 7 },
 ];
 
 const PolaroidGallery = () => {
@@ -23,11 +23,11 @@ const PolaroidGallery = () => {
         Our Memories
       </motion.h2>
 
-      <div className="grid grid-cols-2 gap-6 max-w-sm mx-auto">
+      <div className="grid grid-cols-2 gap-4 sm:gap-6 max-w-sm mx-auto">
         {photos.map((photo, i) => (
           <motion.div
             key={photo.id}
-            className="polaroid-card cursor-pointer"
+            className="polaroid-card cursor-pointer p-1.5 pb-4"
             style={{ rotate: photo.rotation }}
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -40,9 +40,9 @@ const PolaroidGallery = () => {
             <img
               src={photo.src}
               alt={photo.caption}
-              className="w-full aspect-square object-cover rounded-sm"
+              className="w-full aspect-square object-contain rounded-sm bg-white/50"
             />
-            <p className="text-center mt-2 text-sm font-body" style={{ color: "#333" }}>
+            <p className="text-center mt-1.5 text-xs sm:text-sm font-body" style={{ color: "#333" }}>
               {photo.caption}
             </p>
           </motion.div>
@@ -59,7 +59,7 @@ const PolaroidGallery = () => {
             onClick={() => setSelected(null)}
           >
             <motion.div
-              className="polaroid-card max-w-sm w-full glow-gold"
+              className="polaroid-card max-w-sm w-full glow-gold p-2 pb-6"
               initial={{ scale: 0.7, rotate: 5 }}
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0.7, opacity: 0 }}
@@ -67,7 +67,7 @@ const PolaroidGallery = () => {
               <img
                 src={photos.find((p) => p.id === selected)?.src}
                 alt=""
-                className="w-full aspect-square object-cover rounded-sm"
+                className="w-full aspect-square object-contain rounded-sm bg-white/50"
               />
               <p className="text-center mt-3 text-lg font-display" style={{ color: "#333" }}>
                 {photos.find((p) => p.id === selected)?.caption}
