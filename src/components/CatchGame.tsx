@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
+import { playCollectSound, playBoomSound } from "@/utils/sounds";
 
 interface FallingItem {
   id: number;
@@ -86,9 +87,12 @@ const CatchGame = ({ onWin }: Props) => {
             if (diff < 14) {
               const cfg = ITEM_CONFIG[item.type];
               if (item.type === "bomb" || item.type === "broken") {
+                playBoomSound();
+                setScore(0);
                 setMessage(item.type === "bomb" ? "💥 Boom! Haha!" : "💔 Oops!");
                 setTimeout(() => setMessage(""), 1000);
               } else {
+                playCollectSound();
                 setScore((s) => s + cfg.points);
                 if (item.type === "nickname") {
                   setMessage("🔥 BANGARAM 10x!");
