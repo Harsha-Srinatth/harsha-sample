@@ -26,20 +26,32 @@ const FinalLetter = () => {
   return (
     <motion.section
       className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
     >
-      <h2 className="font-display text-4xl text-primary glow-text-gold mb-10">A Letter For You</h2>
+      <motion.h2
+        className="font-display text-4xl text-primary glow-text-gold mb-10"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
+      >
+        A Letter For You
+      </motion.h2>
 
-      <div className="quiz-card max-w-md w-full">
+      <motion.div
+        className="quiz-card max-w-md w-full"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
+      >
         <p className="font-body text-foreground text-base leading-relaxed whitespace-pre-wrap min-h-[200px]">
           {displayed}
           {!done && (
             <span className="inline-block w-0.5 h-5 bg-primary ml-0.5 animate-pulse" />
           )}
         </p>
-      </div>
+      </motion.div>
 
       {done && (
         <motion.p

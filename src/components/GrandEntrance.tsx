@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { playSuccessSound } from "@/utils/sounds";
 
 interface Props {
   onEnter: () => void;
@@ -6,6 +7,11 @@ interface Props {
 
 const GrandEntrance = ({ onEnter }: Props) => {
   const name = "Harshitha Naga Lova Sai Manikanta Vinitha Raja Kumari";
+
+  const handleEnter = () => {
+    playSuccessSound();
+    onEnter();
+  };
 
   return (
     <motion.div
@@ -48,9 +54,10 @@ const GrandEntrance = ({ onEnter }: Props) => {
         className="neon-button font-body cursor-pointer"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.8, duration: 0.8 }}
+        transition={{ delay: 1.8, duration: 0.8, type: "spring", stiffness: 100 }}
+        whileHover={{ scale: 1.05, y: -2 }}
         whileTap={{ scale: 0.95 }}
-        onClick={onEnter}
+        onClick={handleEnter}
       >
         Enter My World ✨
       </motion.button>

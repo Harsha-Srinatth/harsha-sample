@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { playCollectSound, playBoomSound } from "@/utils/sounds";
+import { playCollectSound, playBoomSound, playClickSound, playCelebrationSound } from "@/utils/sounds";
 
 interface FallingItem {
   id: number;
@@ -39,6 +39,7 @@ const CatchGame = ({ onWin }: Props) => {
 
   useEffect(() => {
     if (score >= WINNING_SCORE && !won) {
+      playCelebrationSound();
       setWon(true);
       setGameStarted(false);
       setTimeout(() => onWin(), 800);
@@ -160,9 +161,18 @@ const CatchGame = ({ onWin }: Props) => {
           Move the teddy to catch hearts, cakes & gifts! Avoid bombs 💣
         </p>
         <p className="text-secondary font-body text-sm mb-6">Reach {WINNING_SCORE} points to unlock the cake! 🎂</p>
-        <button className="neon-button font-body" onClick={() => setGameStarted(true)}>
+        <motion.button
+          className="neon-button font-body"
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 200 }}
+          onClick={() => {
+            playClickSound();
+            setGameStarted(true);
+          }}
+        >
           Start Game 🎮
-        </button>
+        </motion.button>
       </motion.section>
     );
   }

@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { playClickSound } from "@/utils/sounds";
 
 const BackButton = () => {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    playClickSound();
+    navigate(-1);
+  };
 
   return (
     <motion.button
@@ -12,7 +18,7 @@ const BackButton = () => {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.3 }}
       whileTap={{ scale: 0.9 }}
-      onClick={() => navigate(-1)}
+      onClick={handleBack}
     >
       <ArrowLeft size={20} />
     </motion.button>

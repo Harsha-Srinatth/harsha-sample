@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { playClickSound, playSuccessSound, playErrorSound } from "@/utils/sounds";
 
 interface Props {
   onComplete: () => void;
@@ -13,29 +14,38 @@ const LoveQuiz = ({ onComplete }: Props) => {
   const [error, setError] = useState("");
 
   const checkDate = () => {
+    playClickSound();
     if (dateVal.month === "2" && dateVal.day === "1" && dateVal.year === "2026") {
+      playSuccessSound();
       setError("");
       setStep(1);
     } else {
+      playErrorSound();
       setError("Hmm, think again my love 💭");
     }
   };
 
   const checkChoice = (val: string) => {
+    playClickSound();
     setChoiceAnswer(val);
     if (val.toLowerCase() === "patience") {
+      playSuccessSound();
       setError("");
       setTimeout(() => setStep(2), 500);
     } else {
+      playErrorSound();
       setError("Not quite! Try again 😘");
     }
   };
 
   const checkNickname = () => {
+    playClickSound();
     if (nickname.trim().toLowerCase() === "bangaram") {
+      playSuccessSound();
       setError("");
       onComplete();
     } else {
+      playErrorSound();
       setError("That's not the magic word... 🤔");
     }
   };
@@ -88,9 +98,14 @@ const LoveQuiz = ({ onComplete }: Props) => {
                 />
               </div>
               {error && <p className="text-secondary text-sm mb-3">{error}</p>}
-              <button className="neon-button w-full font-body" onClick={checkDate}>
+              <motion.button
+                className="neon-button w-full font-body"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={checkDate}
+              >
                 Check ✨
-              </button>
+              </motion.button>
             </motion.div>
           )}
 
@@ -98,18 +113,23 @@ const LoveQuiz = ({ onComplete }: Props) => {
             <motion.div key="q2" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
               <p className="text-foreground font-body text-lg mb-4">What is my favorite thing about you? 🥰</p>
               <div className="flex flex-col gap-3 mb-4">
-                {["Your smile", "Patience", "Your cooking", "Your style"].map((opt) => (
-                  <button
+                {["Your smile", "Patience", "Your cooking", "Your style"].map((opt, i) => (
+                  <motion.button
                     key={opt}
                     className={`w-full py-3 px-4 rounded-xl font-body text-left transition-all ${
                       choiceAnswer === opt
                         ? "bg-primary text-primary-foreground glow-gold"
                         : "bg-muted text-foreground hover:bg-muted/80"
                     }`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1, type: "spring", stiffness: 150 }}
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => checkChoice(opt)}
                   >
                     {opt}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
               {error && <p className="text-secondary text-sm">{error}</p>}
@@ -128,9 +148,14 @@ const LoveQuiz = ({ onComplete }: Props) => {
                 onChange={(e) => setNickname(e.target.value)}
               />
               {error && <p className="text-secondary text-sm mb-3">{error}</p>}
-              <button className="neon-button w-full font-body" onClick={checkNickname}>
+              <motion.button
+                className="neon-button w-full font-body"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={checkNickname}
+              >
                 Unlock 🔓
-              </button>
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>

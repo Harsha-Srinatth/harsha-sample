@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { playClickSound } from "@/utils/sounds";
 
 const photos = [
   { id: 1, src: "/ishu5.jpeg", caption: "Ishuamma 💕", rotation: -8 },
@@ -29,13 +30,16 @@ const PolaroidGallery = () => {
             key={photo.id}
             className="polaroid-card cursor-pointer p-1.5 pb-4"
             style={{ rotate: photo.rotation }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.8, y: 30 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.15, duration: 0.5 }}
-            whileHover={{ scale: 1.05, rotate: 0 }}
+            transition={{ delay: i * 0.12, duration: 0.6, type: "spring", stiffness: 120 }}
+            whileHover={{ scale: 1.08, rotate: 0, y: -5 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setSelected(photo.id)}
+            onClick={() => {
+              playClickSound();
+              setSelected(photo.id);
+            }}
           >
             <img
               src={photo.src}
@@ -56,7 +60,10 @@ const PolaroidGallery = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
+            onClick={() => {
+              playClickSound();
+              setSelected(null);
+            }}
           >
             <motion.div
               className="polaroid-card max-w-sm w-full glow-gold p-2 pb-6"

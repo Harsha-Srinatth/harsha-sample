@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, useMotionValue } from "framer-motion";
+import { playSuccessSound } from "@/utils/sounds";
 
 const CakeSection = () => {
   const [cakeCut, setCakeCut] = useState(false);
@@ -13,6 +14,7 @@ const CakeSection = () => {
     // If dragged down enough (past ~120px), it hits the cake
     if (currentY > 100) {
       if (navigator.vibrate) navigator.vibrate(200);
+      playSuccessSound();
       try {
         const audio = new Audio("https://cdn.freesound.org/previews/397/397354_4284968-lq.mp3");
         audio.volume = 0.5;
